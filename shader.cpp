@@ -26,7 +26,7 @@ Shader::Shader(GLenum shader_type)
     }
     else
     {
-        throw(OpenglExecption("Invalid GLenum value", 200));
+        throw(OpenglException("Invalid GLenum value", 200));
     }
 }
 
