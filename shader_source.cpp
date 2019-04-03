@@ -30,7 +30,7 @@ void ShaderSource::set_shader_source(const char *source)
     }
 }
 
-void ShaderSource::set_shader_sourcer_from_file(const char *filename)
+void ShaderSource::set_shader_source_from_file(const char *filename)
 {
     if(filename != NULL)
     {
