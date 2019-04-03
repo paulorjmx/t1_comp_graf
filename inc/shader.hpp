@@ -16,7 +16,7 @@
                 bool is_compiled();
                 void compile_shader();
                 void create_shader();
-                void set_shader_source(const char **source, unsigned int count);
+                void set_shader_source(const char *source, unsigned int count);
                 void set_shader_type(GLenum shader_type);
                 unsigned int get_shader_id();
                 GLenum get_shader_type();
