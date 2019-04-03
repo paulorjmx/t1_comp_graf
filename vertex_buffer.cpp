@@ -43,7 +43,14 @@ void VertexBuffer::bind_buffer(GLenum target, unsigned int pos)
 {
     if(this->vbo != NULL)
     {
-        glBindBuffer(target, this->vbo[pos]);
+        if(target != GL_ARRAY_BUFFER || target != GL_ATOMIC_COUNTER_BUFFER || target != GL_COPY_READ_BUFFER || target != GL_COPY_WRITE_BUFFER || target != GL_DISPATCH_INDIRECT_BUFFER || target != GL_DRAW_INDIRECT_BUFFER || target != GL_ELEMENT_ARRAY_BUFFER || target != GL_PIXEL_PACK_BUFFER || target != GL_PIXEL_UNPACK_BUFFER || target != GL_QUERY_BUFFER || target != GL_SHADER_STORAGE_BUFFER || target != GL_TEXTURE_BUFFER || target !=  GL_TRANSFORM_FEEDBACK_BUFFER || target != GL_UNIFORM_BUFFER)
+        {
+            throw(OpenglException("Invalid target", 207));
+        }
+        else
+        {
+            glBindBuffer(target, this->vbo[pos]);
+        }
     }
     else
     {
