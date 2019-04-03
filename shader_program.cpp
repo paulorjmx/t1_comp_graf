@@ -24,12 +24,12 @@ void ShaderProgram::attach_shader(Shader shader)
         }
         else
         {
-            throw(OpenglExecption("You need to compile a shader program first.", 510));
+            throw(OpenglException("You need to compile a shader program first.", 510));
         }
     }
     else
     {
-        throw(OpenglExecption("You need to create a shader program first.", 500));
+        throw(OpenglException("You need to create a shader program first.", 500));
     }
 }
 
@@ -42,7 +42,7 @@ void ShaderProgram::link_program()
     {
         char info_log[512];
         glGetProgramInfoLog(this->shader_program_id, 512, NULL, info_log);
-        throw(OpenglExecption(info_log, 800));
+        throw(OpenglException(info_log, 800));
     }
 }
 
