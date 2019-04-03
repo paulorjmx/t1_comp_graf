@@ -1,17 +1,28 @@
 #include "inc/vertex_buffer.hpp"
+#include "inc/opengl_exception.hpp"
 
 VertexBuffer::VertexBuffer(unsigned int quantity)
 {
-    this->vbo = new unsigned int[quantity];
-    this->quantity = quantity;
+    if(quantity > 0)
+    {
+        this->vbo = new unsigned int[quantity];
+        this->quantity = quantity;
+    }
+    else
+    {
+        throw(OpenglException("Quantity need to be greater than 0", 530));
+    }
 }
 
-int VertexBuffer::gen_buffer()
+void VertexBuffer::gen_buffer()
 {
-    int error_code = -1;
     if(this->vbo != NULL)
     {
         glGenBuffers(this->quantity, this->vbo);
+    }
+    else
+    {
+        throw(OpenglException("You need to instantiate the Vertex Buffer class.", 560));
     }
     return error_code;
 }
@@ -24,28 +35,60 @@ unsigned int VertexBuffer::get_vertex_buffer(unsigned int pos)
     }
     else
     {
-        return 0;
+        throw(OpenglException("You need to instantiate the Vertex Buffer class.", 560));
     }
 }
 
-int VertexBuffer::bind_buffer(GLenum target, unsigned int pos)
+void VertexBuffer::bind_buffer(GLenum target, unsigned int pos)
 {
-    int error_code = -1;
     if(this->vbo != NULL)
     {
         glBindBuffer(target, this->vbo[pos]);
     }
-    return error_code;
+    else
+    {
+        throw(OpenglException("You need to instantiate the Vertex Buffer class.", 590));
+    }
 }
 
-int VertexBuffer::buffer_data(GLenum mode, size_t size, const void *data, GLenum usage)
+void VertexBuffer::buffer_data(GLenum mode, size_t size, const void *data, GLenum usage)
 {
-    int error_code = -1;
     if(this->vbo != NULL)
     {
-        glBufferData(mode, size, data, usage);
+        if(data != NULL)
+        {
+            if(size > 0)
+            {
+                if(mode != GL_ARRAY_BUFFER || mode != GL_ATOMIC_COUNTER_BUFFER || mode != GL_COPY_READ_BUFFER || mode != GL_COPY_WRITE_BUFFER || mode != GL_DISPATCH_INDIRECT_BUFFER || mode != GL_DRAW_INDIRECT_BUFFER || mode != GL_ELEMENT_ARRAY_BUFFER || mode != GL_PIXEL_PACK_BUFFER || mode != GL_PIXEL_UNPACK_BUFFER || mode != GL_QUERY_BUFFER || mode != GL_SHADER_STORAGE_BUFFER || mode != GL_TEXTURE_BUFFER || mode !=  GL_TRANSFORM_FEEDBACK_BUFFER || mode != GL_UNIFORM_BUFFER)
+                {
+                    throw(OpenglException("Invalid mode", 209));
+                }
+                else
+                {
+                    if(usage != GL_STREAM_DRAW || usage != GL_STREAM_READ || usage != GL_STREAM_COPY || usage != GL_STATIC_DRAW || usage != GL_STATIC_READ || usage != GL_STATIC_COPY || usage != GL_DYNAMIC_DRAW || usage != GL_DYNAMIC_READ || usage != GL_DYNAMIC_COPY)
+                    {
+                        throw(OpenglException("Invalid usage", 208));
+                    }
+                    else
+                    {
+                        glBufferData(mode, size, data, usage);
+                    }
+                }
+            }
+            else
+            {
+                throw(OpenglException("The data is not empty.", 205));
+            }
+        }
+        else
+        {
+            throw(OpenglException("The data couldn't be empty.", 200));
+        }
     }
-    return error_code;
+    else
+    {
+        throw(OpenglException("You need to instantiate the Vertex Buffer class.", 590));
+    }
 }
 
 VertexBuffer::~VertexBuffer()
