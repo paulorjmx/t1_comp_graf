@@ -1,4 +1,5 @@
 #include "inc/shader.hpp"
+#include "inc/opengl_exception.hpp"
 #include <cstring>
 #include <iostream>
 
@@ -15,11 +16,18 @@ Shader::Shader()
 
 Shader::Shader(GLenum shader_type)
 {
-    this->shader_id = 0;
-    this->shader_type = shader_type;
-    this->created = false;
-    this->sourced = false;
-    this->compiled = false;
+    if(shader_type >= 0)
+    {
+        this->shader_id = 0;
+        this->shader_type = shader_type;
+        this->created = false;
+        this->sourced = false;
+        this->compiled = false;
+    }
+    else
+    {
+        throw(OpenglExecption("Invalid GLenum value", 200));
+    }
 }
 
 void Shader::set_shader_type(GLenum shader_type)
@@ -27,9 +35,8 @@ void Shader::set_shader_type(GLenum shader_type)
     this->shader_type = shader_type;
 }
 
-int Shader::set_shader_source(const char **source, unsigned int count)
+void Shader::set_shader_source(const char **source, unsigned int count)
 {
-    int error_code = -1;
     if(source != NULL)
     {
         if(count > 0)
@@ -41,15 +48,18 @@ int Shader::set_shader_source(const char **source, unsigned int count)
             }
             else
             {
-                error_code = -3;
+                throw(OpenglException("The shader is need to be created.", 600));
             }
         }
         else
         {
-            error_code = -2;
+            throw(OpenglException("Count need to be greater than 0.", 200));
         }
     }
-    return error_code;
+    else
+    {
+        throw(OpenglException("The source code of shader is empty", 200));
+    }
 }
 
 unsigned int Shader::get_shader_id()
@@ -62,19 +72,24 @@ GLenum Shader::get_shader_type()
     return this->shader_type;
 }
 
-int Shader::create_shader()
+void Shader::create_shader()
 {
-    int error_code = -1;
     if(this->created != true)
     {
         this->shader_id = glCreateShader(this->shader_type);
         if(this->shader_id != 0)
         {
-            error_code = 0;
             this->created = true;
         }
+        else
+        {
+            throw(OpenglException("Couldn't be possible create the shader.", 150));
+        }
     }
-    return error_code;
+    else
+    {
+        throw(OpenglException("The shader is already created.", 620));
+    }
 }
 
 bool Shader::is_created()
@@ -98,12 +113,16 @@ void Shader::compile_shader()
         {
             char info_log[512];
             glGetShaderInfoLog(this->shader_id, 512, NULL, info_log);
-            cerr << "Vertex shader error: " << info_log << endl;
+            throw(OpenglException(info_log, 810));
         }
         else
         {
             this->compiled = true;
         }
+    }
+    else
+    {
+        throw(OpenglException("You need to attach a shader source code.", 630));
     }
 }
 
