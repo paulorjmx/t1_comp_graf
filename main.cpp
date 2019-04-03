@@ -13,15 +13,28 @@ int main(int argc, char const *argv[])
 
     ShaderSource vertex_source;
     ShaderSource fragment_source;
+
+    float vertices[36] = {0.0f, 0.0f, 0.0f,
+                 		0.25f, 0.0f, 0.0f,
+                 		0.25f, 0.25f, 0.0f,
+
+                 		0.0f, 0.0f, 0.0f,
+                 		0.0f, 0.25f, 0.0f,
+                 		-0.25f, 0.25f, 0.0f,
+
+                 		0.0f, 0.0f, 0.0f,
+                 		-0.25f, 0.0f, 0.0f,
+                 		-0.25f, -0.25f, 0.0f,
+
+                 		0.0f, 0.0f, 0.0f,
+                 		0.0f, -0.25f, 0.0f,
+                 		0.25f, -0.25f, 0.0f,
+    };
     try
     {
         vertex_source.set_shader_source_from_file("v_shader.shd");
         fragment_source.set_shader_source_from_file("f_shader.shd");
 
-        float vertices[] = {0.0f, 0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f
-        };
 
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -60,7 +73,7 @@ int main(int argc, char const *argv[])
 
         VertexBuffer vb(1);
         VertexArray va(1);
-        // unsigned int VBO, VAO;
+
         va.gen_buffer();
         vb.gen_buffer();
 
@@ -88,7 +101,7 @@ int main(int argc, char const *argv[])
             // draw our first triangle
             shader_program.user_program();
             va.bind_vertex_array(0); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-            glDrawArrays(GL_TRIANGLES, 0, 3);
+            glDrawArrays(GL_TRIANGLES, 0, 12);
             // glBindVertexArray(0); // no need to unbind it every time
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
