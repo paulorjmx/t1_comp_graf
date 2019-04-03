@@ -35,7 +35,7 @@ void Shader::set_shader_type(GLenum shader_type)
     this->shader_type = shader_type;
 }
 
-void Shader::set_shader_source(const char **source, unsigned int count)
+void Shader::set_shader_source(const char *source, unsigned int count)
 {
     if(source != NULL)
     {
@@ -43,7 +43,7 @@ void Shader::set_shader_source(const char **source, unsigned int count)
         {
             if(this->created)
             {
-                glShaderSource(this->shader_id, count, source, NULL);
+                glShaderSource(this->shader_id, count, &source, NULL);
                 this->sourced = true;
             }
             else
