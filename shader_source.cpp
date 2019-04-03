@@ -39,7 +39,7 @@ void ShaderSource::set_shader_sourcer_from_file(const char *filename)
             fstream input_file(filename, ios::in);
             if(input_file.is_open() != true)
             {
-                throw(OpenglException("Failed to open the file.", 210));
+                throw(OpenglException("Failed to open the file.", 100));
             }
             else
             {
@@ -49,7 +49,7 @@ void ShaderSource::set_shader_sourcer_from_file(const char *filename)
                 input_file.seekg(0, input_file.beg);
                 if(!input_file.read(this->source_code, lenght))
                 {
-                    throw(OpenglException("An error occured on read the shader source file.", 300));
+                    throw(OpenglException("An error occured on read the shader source file.", 110));
                 }
 
             }
@@ -57,12 +57,12 @@ void ShaderSource::set_shader_sourcer_from_file(const char *filename)
         }
         else
         {
-            throw(OpenglException("The shader source code is not empty.", 100));
+            throw(OpenglException("The shader source code is not empty.", 220));
         }
     }
     else
     {
-        throw(OpenglException("The shader file not exists.", 205));
+        throw(OpenglException("The shader file name is empty.", 200));
     }
 }
 
