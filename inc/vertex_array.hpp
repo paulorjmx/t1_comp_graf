@@ -10,8 +10,8 @@
 
             public:
                 VertexArray(unsigned int quantity = 1);
-                int gen_buffer();
-                int bind_vertex_array(unsigned int position);
+                void gen_buffer();
+                void bind_vertex_array(unsigned int position);
                 ~VertexArray();
         };
 #endif
