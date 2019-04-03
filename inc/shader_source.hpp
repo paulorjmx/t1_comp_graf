@@ -14,7 +14,7 @@
                 ShaderSource();
                 ShaderSource(const char *source);
                 void set_shader_source(const char *source);
-                void set_shader_sourcer_from_file(const char *filename);
+                void set_shader_source_from_file(const char *filename);
                 char *get_shader_source();
                 ~ShaderSource();
         };
