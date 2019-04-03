@@ -1,4 +1,5 @@
 #include "inc/shader_program.hpp"
+#include "inc/opengl_exception.hpp"
 #include <iostream>
 
 using namespace std;
@@ -13,22 +14,23 @@ void ShaderProgram::create_shader_program()
     this->shader_program_id = glCreateProgram();
 }
 
-int ShaderProgram::attach_shader(Shader shader)
+void ShaderProgram::attach_shader(Shader shader)
 {
-    int error_code = -1;
-    if(this->shader_program_id != -1)
+    if(this->shader_program_id != 0)
     {
         if(shader.is_compiled())
         {
             glAttachShader(this->shader_program_id, shader.get_shader_id());
-            error_code = 0;
         }
         else
         {
-            error_code = -2;
+            throw(OpenglExecption("You need to compile a shader program first.", 510));
         }
     }
-    return error_code;
+    else
+    {
+        throw(OpenglExecption("You need to create a shader program first.", 500));
+    }
 }
 
 void ShaderProgram::link_program()
@@ -40,7 +42,7 @@ void ShaderProgram::link_program()
     {
         char info_log[512];
         glGetProgramInfoLog(this->shader_program_id, 512, NULL, info_log);
-        cerr << "Program shader error: " << info_log << endl;
+        throw(OpenglExecption(info_log, 800));
     }
 }
 
