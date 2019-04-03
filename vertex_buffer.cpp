@@ -42,13 +42,13 @@ void VertexBuffer::bind_buffer(GLenum target, unsigned int pos)
 {
     if(this->vbo != NULL)
     {
-        if(target != GL_ARRAY_BUFFER || target != GL_ATOMIC_COUNTER_BUFFER || target != GL_COPY_READ_BUFFER || target != GL_COPY_WRITE_BUFFER || target != GL_DISPATCH_INDIRECT_BUFFER || target != GL_DRAW_INDIRECT_BUFFER || target != GL_ELEMENT_ARRAY_BUFFER || target != GL_PIXEL_PACK_BUFFER || target != GL_PIXEL_UNPACK_BUFFER || target != GL_QUERY_BUFFER || target != GL_SHADER_STORAGE_BUFFER || target != GL_TEXTURE_BUFFER || target !=  GL_TRANSFORM_FEEDBACK_BUFFER || target != GL_UNIFORM_BUFFER)
+        if(target == GL_ARRAY_BUFFER || target == GL_ATOMIC_COUNTER_BUFFER || target == GL_COPY_READ_BUFFER || target == GL_COPY_WRITE_BUFFER || target == GL_DISPATCH_INDIRECT_BUFFER || target == GL_DRAW_INDIRECT_BUFFER || target == GL_ELEMENT_ARRAY_BUFFER || target == GL_PIXEL_PACK_BUFFER || target == GL_PIXEL_UNPACK_BUFFER || target == GL_QUERY_BUFFER || target == GL_SHADER_STORAGE_BUFFER || target == GL_TEXTURE_BUFFER || target ==  GL_TRANSFORM_FEEDBACK_BUFFER || target == GL_UNIFORM_BUFFER)
         {
-            throw(OpenglException("Invalid target", 207));
+            glBindBuffer(target, this->vbo[pos]);
         }
         else
         {
-            glBindBuffer(target, this->vbo[pos]);
+            throw(OpenglException("Invalid target", 207));
         }
     }
     else
@@ -65,20 +65,20 @@ void VertexBuffer::buffer_data(GLenum mode, size_t size, const void *data, GLenu
         {
             if(size > 0)
             {
-                if(mode != GL_ARRAY_BUFFER || mode != GL_ATOMIC_COUNTER_BUFFER || mode != GL_COPY_READ_BUFFER || mode != GL_COPY_WRITE_BUFFER || mode != GL_DISPATCH_INDIRECT_BUFFER || mode != GL_DRAW_INDIRECT_BUFFER || mode != GL_ELEMENT_ARRAY_BUFFER || mode != GL_PIXEL_PACK_BUFFER || mode != GL_PIXEL_UNPACK_BUFFER || mode != GL_QUERY_BUFFER || mode != GL_SHADER_STORAGE_BUFFER || mode != GL_TEXTURE_BUFFER || mode !=  GL_TRANSFORM_FEEDBACK_BUFFER || mode != GL_UNIFORM_BUFFER)
+                if(mode == GL_ARRAY_BUFFER || mode == GL_ATOMIC_COUNTER_BUFFER || mode == GL_COPY_READ_BUFFER || mode == GL_COPY_WRITE_BUFFER || mode == GL_DISPATCH_INDIRECT_BUFFER || mode == GL_DRAW_INDIRECT_BUFFER || mode == GL_ELEMENT_ARRAY_BUFFER || mode == GL_PIXEL_PACK_BUFFER || mode == GL_PIXEL_UNPACK_BUFFER || mode == GL_QUERY_BUFFER || mode == GL_SHADER_STORAGE_BUFFER || mode == GL_TEXTURE_BUFFER || mode ==  GL_TRANSFORM_FEEDBACK_BUFFER || mode == GL_UNIFORM_BUFFER)
                 {
-                    throw(OpenglException("Invalid mode", 209));
-                }
-                else
-                {
-                    if(usage != GL_STREAM_DRAW || usage != GL_STREAM_READ || usage != GL_STREAM_COPY || usage != GL_STATIC_DRAW || usage != GL_STATIC_READ || usage != GL_STATIC_COPY || usage != GL_DYNAMIC_DRAW || usage != GL_DYNAMIC_READ || usage != GL_DYNAMIC_COPY)
-                    {
-                        throw(OpenglException("Invalid usage", 208));
-                    }
-                    else
+                    if(usage == GL_STREAM_DRAW || usage == GL_STREAM_READ || usage == GL_STREAM_COPY || usage == GL_STATIC_DRAW || usage == GL_STATIC_READ || usage == GL_STATIC_COPY || usage == GL_DYNAMIC_DRAW || usage == GL_DYNAMIC_READ || usage == GL_DYNAMIC_COPY)
                     {
                         glBufferData(mode, size, data, usage);
                     }
+                    else
+                    {
+                        throw(OpenglException("Invalid usage", 208));
+                    }
+                }
+                else
+                {
+                    throw(OpenglException("Invalid mode", 209));
                 }
             }
             else
