@@ -24,7 +24,6 @@ void VertexBuffer::gen_buffer()
     {
         throw(OpenglException("You need to instantiate the Vertex Buffer class.", 560));
     }
-    return error_code;
 }
 
 unsigned int VertexBuffer::get_vertex_buffer(unsigned int pos)
