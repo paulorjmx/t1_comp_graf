@@ -51,7 +51,7 @@ unsigned int ShaderProgram::get_shader_program_id()
     return this->shader_program_id;
 }
 
-void ShaderProgram::user_program()
+void ShaderProgram::use_program()
 {
     glUseProgram(this->shader_program_id);
 }
