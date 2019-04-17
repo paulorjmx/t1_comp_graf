@@ -12,7 +12,7 @@
                 void create_shader_program();
                 void attach_shader(Shader shader);
                 void link_program();
-                void user_program();
+                void use_program();
                 unsigned int get_shader_program_id();
                 ~ShaderProgram();
 
