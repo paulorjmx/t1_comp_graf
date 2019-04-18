@@ -1,6 +1,6 @@
 #ifndef VERTEX_ARRAY_HPP
     #define VERTEX_ARRAY_HPP
-        #include <inc/glad/glad.h>
+        #include <glad/glad.h>
         #include <iostream>
 
         class VertexArray

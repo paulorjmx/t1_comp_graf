@@ -1,6 +1,6 @@
 #ifndef VERTEX_BUFFER_HPP
     #define VERTEX_BUFFER_HPP
-        #include <inc/glad/glad.h>
+        #include <glad/glad.h>
         #include <iostream>
 
         class VertexBuffer
