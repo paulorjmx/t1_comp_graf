@@ -42,6 +42,7 @@ void ShaderProgram::link_program()
     {
         char info_log[512];
         glGetProgramInfoLog(this->shader_program_id, 512, NULL, info_log);
+        cout << info_log << endl;
         throw(OpenglException(info_log, 800));
     }
 }
