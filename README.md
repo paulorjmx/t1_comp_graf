@@ -1,4 +1,4 @@
-#Trabalho 1 - Computação Gráfica
+# Trabalho 1 - Computação Gráfica
 Para compilar o projeto:
 ```
 cmake .
