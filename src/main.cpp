@@ -97,10 +97,10 @@ int main(int argc, char const *argv[])
         glEnableVertexAttribArray(0);
 
         glfwSetFramebufferSizeCallback(window, framebuffer_resize_callback);
-        glfwSetKeyCallback(window, key_pressed_callback);
+        glfwSetKeyCallback(window, key_pressed_callback); // Verifica se a tecla foi pressionada (utilizada para a barra de espaço)
         while(!glfwWindowShouldClose(window))
         {
-            process_input(window); // Processa a tecla pressionada pelo usuário.
+            process_input(window); // Processa a tecla pressionada, ou segurada, pelo usuário.
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
