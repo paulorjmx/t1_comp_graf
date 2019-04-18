@@ -66,7 +66,7 @@ void ShaderSource::set_shader_source_from_file(const char *filename)
     }
 }
 
-char *ShaderSource::get_shader_source()
+const char *ShaderSource::get_shader_source()
 {
     return this->source_code;
 }
