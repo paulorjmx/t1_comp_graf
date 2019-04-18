@@ -113,6 +113,7 @@ void Shader::compile_shader()
         {
             char info_log[512];
             glGetShaderInfoLog(this->shader_id, 512, NULL, info_log);
+            cout << info_log << endl;
             throw(OpenglException(info_log, 810));
         }
         else
