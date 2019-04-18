@@ -4,15 +4,24 @@
 #include "inc/vertex_buffer.hpp"
 #include "inc/vertex_array.hpp"
 #include "inc/opengl_exception.hpp"
+#include "inc/graphic_math.hpp"
 #include <GLFW/glfw3.h>
 
-void framebuffer_resize_callback(GLFWwindow *window, int width, int height);
+void framebuffer_resize_callback(GLFWwindow *window, int width, int height); // Função callback utilizada para atulizar o ViewPort
+void process_input(GLFWwindow *window, GraphicMath *mat); // Função utilizada para processar as entradas do teclado
+
+// Constantes utilizadas
+const float POSITION_RATE = 0.0025f; // Taxa na qual o objeto realiza a translação
+float VELOCITY = 0.00001f; // Velocidade na qual o objeto se move
+float ACCELERATION = 0.0015f; // Taxa de variação da velocidade
+char ROTATE_FLAG = 0x00; // Flag utilizada para saber se o objeto está rodando.
 
 int main(int argc, char const *argv[])
 {
 
     ShaderSource vertex_source;
     ShaderSource fragment_source;
+    GraphicMath matrix; // Matriz utilizada para as transformações
 
     float vertices[36] = {0.0f, 0.0f, 0.0f,
                  		0.25f, 0.0f, 0.0f,
@@ -39,7 +48,7 @@ int main(int argc, char const *argv[])
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        GLFWwindow *window = glfwCreateWindow(800, 600, "OpenGL Triangle", NULL, NULL);
+        GLFWwindow *window = glfwCreateWindow(800, 600, "Trabalho 1 - Computação Gráfica", NULL, NULL);
         if(window == NULL)
         {
             cout << "Failed to create window!" << endl;
@@ -71,8 +80,8 @@ int main(int argc, char const *argv[])
         shader_program.link_program();
 
 
-        VertexBuffer vb(1);
-        VertexArray va(1);
+        VertexBuffer vb(1); // Cria 1 VertexBuffer
+        VertexArray va(1); // Cria 1 VertexArray
 
         va.gen_buffer();
         vb.gen_buffer();
@@ -82,43 +91,91 @@ int main(int argc, char const *argv[])
         vb.bind_buffer(GL_ARRAY_BUFFER, 0);
         vb.buffer_data(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
         glEnableVertexAttribArray(0);
-
-        // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-        // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-        glBindVertexArray(0);
-
 
         glfwSetFramebufferSizeCallback(window, framebuffer_resize_callback);
         while(!glfwWindowShouldClose(window))
         {
-            glClearColor(0.2f, 0.3f, 0.3f, 1.0);
+            process_input(window, &matrix);
+            glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
-            // draw our first triangle
-            shader_program.use_program();
-            va.bind_vertex_array(0); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-            glDrawArrays(GL_TRIANGLES, 0, 12);
-            // glBindVertexArray(0); // no need to unbind it every time
 
-            // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-            // -------------------------------------------------------------------------------
+            shader_program.use_program();
+            if(ROTATE_FLAG == 0x01) // Checa se o botao para rodar foi ativado
+            {
+                matrix.rotate_matrix(0.0f, 0.0f, 0.0f, VELOCITY);
+            }
+            else
+            {
+                matrix.stop_rotate();
+            }
+
+            unsigned int transform_location = glGetUniformLocation(shader_program.get_shader_program_id(), "transform");
+            glUniformMatrix4fv(transform_location, 1, GL_FALSE, matrix.get_transf_matrix());
+            va.bind_vertex_array(0);
+            glDrawArrays(GL_TRIANGLES, 0, 12);
+
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
-        // glDeleteVertexArrays(1, &VAO);
-        // glDeleteBuffers(1, &VBO);
 
         glfwTerminate();
     }
     catch(OpenglException &e)
     {
         cout << "Error " << e.get_error_code() << ": " << e.get_message() << endl;
+        return -1;
     }
     return 0;
+}
+
+void process_input(GLFWwindow *window, GraphicMath *mat)
+{
+    if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    {
+        mat->translate_matrix(0.0f, POSITION_RATE, 0.0f);
+    }
+    else if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+        mat->translate_matrix(-POSITION_RATE, 0.0f, 0.0f);
+    }
+    else if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+        mat->translate_matrix(0.0f, -POSITION_RATE, 0.0f);
+    }
+    else if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+        mat->translate_matrix(POSITION_RATE, 0.0f, 0.0f);
+    }
+    else if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    {
+        if(ROTATE_FLAG == 0x00)
+        {
+            ROTATE_FLAG = 0x01;
+        }
+    }
+    else if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    {
+        if(ROTATE_FLAG == 0x01) // So aumenta a velocidade se o objeto esta girando
+        {
+            VELOCITY -= 0.0015f;
+        }
+    }
+    else if(glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    {
+        if(ROTATE_FLAG == 0x01) // So aumenta a velocidade se o objeto esta girando
+        {
+            VELOCITY += 0.0015f;
+        }
+    }
+    else if(glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+    {
+        if(ROTATE_FLAG == 0x01)
+        {
+            ROTATE_FLAG = 0x00;
+        }
+    }
 }
 
 void framebuffer_resize_callback(GLFWwindow *window, int width, int height)
