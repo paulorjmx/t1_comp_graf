@@ -5,23 +5,25 @@
 #include "../inc/vertex_array.hpp"
 #include "../inc/opengl_exception.hpp"
 #include "../inc/graphic_math.hpp"
+#include <unistd.h>
 #include <GLFW/glfw3.h>
 
 void framebuffer_resize_callback(GLFWwindow *window, int width, int height); // Função callback utilizada para atulizar o ViewPort
-void process_input(GLFWwindow *window, GraphicMath *mat); // Função utilizada para processar as entradas do teclado
+void key_pressed_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
+void process_input(GLFWwindow *window); // Função utilizada para processar as entradas do teclado
 
 // Constantes utilizadas
-const float POSITION_RATE = 0.0025f; // Taxa na qual o objeto realiza a translação
-float VELOCITY = 0.00001f; // Velocidade na qual o objeto se move
+const float POSITION_RATE = 0.005f; // Taxa na qual o objeto realiza a translação
+float VELOCITY = 0.00001f; // Velocidade da rotação do objeto
 float ACCELERATION = 0.0015f; // Taxa de variação da velocidade
-char ROTATE_FLAG = 0x00; // Flag utilizada para saber se o objeto está rodando.
+char ROTATE_FLAG = 0x00; // Flag utilizada para saber se o objeto está rodando
+GraphicMath matrix; // Matriz utilizada para as transformações
 
 int main(int argc, char const *argv[])
 {
 
     ShaderSource vertex_source; // ShaderSource é a classe criada com o intuito de conter código de shaders.
     ShaderSource fragment_source;
-    GraphicMath matrix; // Matriz utilizada para as transformações
 
     float vertices[36] = {0.0f, 0.0f, 0.0f,
                  		0.25f, 0.0f, 0.0f,
@@ -95,9 +97,10 @@ int main(int argc, char const *argv[])
         glEnableVertexAttribArray(0);
 
         glfwSetFramebufferSizeCallback(window, framebuffer_resize_callback);
+        glfwSetKeyCallback(window, key_pressed_callback);
         while(!glfwWindowShouldClose(window))
         {
-            process_input(window, &matrix); // Processa a tecla pressionada pelo usuário.
+            process_input(window); // Processa a tecla pressionada pelo usuário.
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
@@ -130,34 +133,23 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
-void process_input(GLFWwindow *window, GraphicMath *mat)
+void process_input(GLFWwindow *window)
 {
     if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        mat->translate_matrix(0.0f, POSITION_RATE, 0.0f);
+        matrix.translate_matrix(0.0f, POSITION_RATE, 0.0f);
     }
     else if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        mat->translate_matrix(-POSITION_RATE, 0.0f, 0.0f);
+        matrix.translate_matrix(-POSITION_RATE, 0.0f, 0.0f);
     }
     else if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        mat->translate_matrix(0.0f, -POSITION_RATE, 0.0f);
+        matrix.translate_matrix(0.0f, -POSITION_RATE, 0.0f);
     }
     else if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        mat->translate_matrix(POSITION_RATE, 0.0f, 0.0f);
-    }
-    else if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-    {
-        if(ROTATE_FLAG == 0x00)
-        {
-            ROTATE_FLAG = 0x01;
-        }
-        else
-        {
-            ROTATE_FLAG = 0x00;
-        }
+        matrix.translate_matrix(POSITION_RATE, 0.0f, 0.0f);
     }
     else if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
     {
@@ -173,9 +165,17 @@ void process_input(GLFWwindow *window, GraphicMath *mat)
             VELOCITY += 0.0015f;
         }
     }
-    else if(glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+}
+
+void key_pressed_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+{
+    if(key == GLFW_KEY_SPACE && action == GLFW_PRESS)
     {
-        if(ROTATE_FLAG == 0x01)
+        if(ROTATE_FLAG == 0x00)
+        {
+            ROTATE_FLAG = 0x01;
+        }
+        else
         {
             ROTATE_FLAG = 0x00;
         }
