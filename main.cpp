@@ -19,7 +19,7 @@ char ROTATE_FLAG = 0x00; // Flag utilizada para saber se o objeto está rodando.
 int main(int argc, char const *argv[])
 {
 
-    ShaderSource vertex_source;
+    ShaderSource vertex_source; // ShaderSource é a classe criada com o intuito de conter código de shaders.
     ShaderSource fragment_source;
     GraphicMath matrix; // Matriz utilizada para as transformações
 
@@ -41,8 +41,8 @@ int main(int argc, char const *argv[])
     };
     try
     {
-        vertex_source.set_shader_source_from_file("v_shader.shd");
-        fragment_source.set_shader_source_from_file("f_shader.shd");
+        vertex_source.set_shader_source_from_file("v_shader.shd"); // Pega o código do vertex shader
+        fragment_source.set_shader_source_from_file("f_shader.shd"); // Pega o código do fragment shader
 
 
         glfwInit();
@@ -97,7 +97,7 @@ int main(int argc, char const *argv[])
         glfwSetFramebufferSizeCallback(window, framebuffer_resize_callback);
         while(!glfwWindowShouldClose(window))
         {
-            process_input(window, &matrix);
+            process_input(window, &matrix); // Processa a tecla pressionada pelo usuário.
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
@@ -154,17 +154,21 @@ void process_input(GLFWwindow *window, GraphicMath *mat)
         {
             ROTATE_FLAG = 0x01;
         }
+        else
+        {
+            ROTATE_FLAG = 0x00;
+        }
     }
     else if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
     {
-        if(ROTATE_FLAG == 0x01) // So aumenta a velocidade se o objeto esta girando
+        if(ROTATE_FLAG == 0x01) // So modifica a velocidade se o objeto esta girando
         {
             VELOCITY -= 0.0015f;
         }
     }
     else if(glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     {
-        if(ROTATE_FLAG == 0x01) // So aumenta a velocidade se o objeto esta girando
+        if(ROTATE_FLAG == 0x01) // So modifica a velocidade se o objeto esta girando
         {
             VELOCITY += 0.0015f;
         }
