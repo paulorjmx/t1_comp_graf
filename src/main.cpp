@@ -5,7 +5,7 @@
 #include "../inc/vertex_array.hpp"
 #include "../inc/opengl_exception.hpp"
 #include "../inc/graphic_math.hpp"
-#include <unistd.h>
+#include <cmath>
 #include <GLFW/glfw3.h>
 
 void framebuffer_resize_callback(GLFWwindow *window, int width, int height); // Função callback utilizada para atulizar o ViewPort
@@ -14,8 +14,8 @@ void process_input(GLFWwindow *window); // Função utilizada para processar as 
 
 // Constantes utilizadas
 const float POSITION_RATE = 0.005f; // Taxa na qual o objeto realiza a translação
-float VELOCITY = 0.00001f; // Velocidade da rotação do objeto
-float ACCELERATION = 0.0015f; // Taxa de variação da velocidade
+float VELOCITY = M_PI / 100.0f; // Velocidade da rotação do objeto
+float ACCELERATION = M_PI / 100.0f; // Taxa de variação da velocidade
 char ROTATE_FLAG = 0x00; // Flag utilizada para saber se o objeto está rodando
 GraphicMath matrix; // Matriz utilizada para as transformações
 
@@ -24,7 +24,6 @@ int main(int argc, char const *argv[])
 
     ShaderSource vertex_source; // ShaderSource é a classe criada com o intuito de conter código de shaders.
     ShaderSource fragment_source;
-
     float vertices[36] = {0.0f, 0.0f, 0.0f,
                  		0.25f, 0.0f, 0.0f,
                  		0.25f, 0.25f, 0.0f,
@@ -107,6 +106,7 @@ int main(int argc, char const *argv[])
             shader_program.use_program();
             if(ROTATE_FLAG == 0x01) // Checa se o botao para rodar foi ativado
             {
+                printf("%f\n", VELOCITY);
                 matrix.rotate_matrix(0.0f, 0.0f, 0.0f, VELOCITY);
             }
             else
@@ -151,25 +151,25 @@ void process_input(GLFWwindow *window)
     {
         matrix.translate_matrix(POSITION_RATE, 0.0f, 0.0f);
     }
-    else if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-    {
-        if(ROTATE_FLAG == 0x01) // So modifica a velocidade se o objeto esta girando
-        {
-            VELOCITY -= 0.0015f;
-        }
-    }
-    else if(glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-    {
-        if(ROTATE_FLAG == 0x01) // So modifica a velocidade se o objeto esta girando
-        {
-            VELOCITY += 0.0015f;
-        }
-    }
 }
 
 void key_pressed_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
-    if(key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+    if(key == GLFW_KEY_Q && action == GLFW_REPEAT || key == GLFW_KEY_Q && action == GLFW_PRESS)
+    {
+        if(ROTATE_FLAG == 0x01) // So modifica a velocidade se o objeto esta girando
+        {
+            VELOCITY -= ACCELERATION;
+        }
+    }
+    else if(key == GLFW_KEY_E && action == GLFW_REPEAT || key == GLFW_KEY_E && action == GLFW_PRESS)
+    {
+        if(ROTATE_FLAG == 0x01) // So modifica a velocidade se o objeto esta girando
+        {
+            VELOCITY += ACCELERATION;
+        }
+    }
+    else if(key == GLFW_KEY_SPACE && action == GLFW_PRESS)
     {
         if(ROTATE_FLAG == 0x00)
         {
@@ -180,6 +180,7 @@ void key_pressed_callback(GLFWwindow *window, int key, int scancode, int action,
             ROTATE_FLAG = 0x00;
         }
     }
+
 }
 
 void framebuffer_resize_callback(GLFWwindow *window, int width, int height)
