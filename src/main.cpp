@@ -5,12 +5,14 @@
 #include "../inc/vertex_array.hpp"
 #include "../inc/opengl_exception.hpp"
 #include "../inc/graphic_math.hpp"
+#include "../inc/vertex3d.hpp"
 #include <cmath>
 #include <GLFW/glfw3.h>
 
 void framebuffer_resize_callback(GLFWwindow *window, int width, int height); // Função callback utilizada para atulizar o ViewPort
 void key_pressed_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 void process_input(GLFWwindow *window); // Função utilizada para processar as entradas do teclado
+void load_obj(const char *file_name, vector<Vertex3D> &vertexes, vector<Vertex3D> &uv, vector<Vertex3D> &normals);
 
 // Constantes utilizadas
 const float POSITION_RATE = 0.005f; // Taxa na qual o objeto realiza a translação
@@ -21,7 +23,6 @@ GraphicMath matrix; // Matriz utilizada para as transformações
 
 int main(int argc, char const *argv[])
 {
-
     ShaderSource vertex_source; // ShaderSource é a classe criada com o intuito de conter código de shaders.
     ShaderSource fragment_source;
     float vertices[36] = {0.0f, 0.0f, 0.0f,
@@ -186,4 +187,87 @@ void key_pressed_callback(GLFWwindow *window, int key, int scancode, int action,
 void framebuffer_resize_callback(GLFWwindow *window, int width, int height)
 {
     glViewport(0, 0, width, height);
+}
+
+void load_obj(const char *file_name, vector<Vertex3D> &vertexes, vector<Vertex3D> &uv, vector<Vertex3D> &normals)
+{
+    float x = 0.0, y = 0.0, z = 0.0;
+    unsigned int vertex_index[3], normal_index[3], uv_index[3];
+    vector<unsigned int> vertices_indexes, normals_indexes, uv_indexes;
+    vector<Vertex3D> temp_vertices;
+    vector<Vertex3D> temp_normals;
+    vector<Vertex3D> temp_uv;
+    char line_readed[500], *token = NULL;
+    fstream model_file(file_name, ios_base::in);
+    if(model_file.is_open())
+    {
+        while(1)
+        {
+            model_file.getline(line_readed, sizeof(line_readed));
+            if(model_file.eof())
+            {
+                break;
+            }
+            else
+            {
+                if(line_readed[0] == 'v') // If the line begins with v (vertices)
+                {
+                    token = &line_readed[2];
+                    sscanf(token, " %f %f %f", &x, &y, &z);
+                    temp_vertices.push_back(Vertex3D(x, y, z));
+                }
+                else if(line_readed[0] == 'v' && line_readed[1] == 'n') // If the line begins with vn (normals)
+                {
+                    token = &line_readed[3];
+                    sscanf(token, "%f %f %f", &x, &y, &z);
+                    temp_normals.push_back(Vertex3D(x, y, z));
+                }
+                else if(line_readed[0] == 'v' && line_readed[1] == 'n') // If the line begins with vt (texture coordinate)
+                {
+                    token = &line_readed[3];
+                    sscanf(token, "%f %f", &x, &y);
+                    temp_uv.push_back(Vertex3D(x, y, 1.0));
+                }
+                else if(line_readed[0] == 'f')
+                {
+                    token = &line_readed[2];
+                    sscanf(token, "%d/%d/%d %d/%d/%d %d/%d/%d", &vertex_index[0], &uv_index[0], &normal_index[0],
+                                                                &vertex_index[1], &uv_index[1], &normal_index[1],
+                                                                &vertex_index[2], &uv_index[2], &normal_index[2]);
+                    vertices_indexes.push_back(vertex_index[0]);
+                    vertices_indexes.push_back(vertex_index[1]);
+                    vertices_indexes.push_back(vertex_index[2]);
+                    uv_indexes.push_back(uv_index[0]);
+                    uv_indexes.push_back(uv_index[1]);
+                    uv_indexes.push_back(uv_index[2]);
+                    normals_indexes.push_back(normal_index[0]);
+                    normals_indexes.push_back(normal_index[1]);
+                    normals_indexes.push_back(normal_index[2]);
+                }
+            }
+        }
+
+        for(int i = 0; i < vertices_indexes.size(); i++)
+        {
+            Vertex3D v = temp_vertices[vertices_indexes[i]];
+            vertexes.push_back(v);
+        }
+
+        for(int i = 0; i < normals_indexes.size(); i++)
+        {
+            Vertex3D n = temp_normals[normals_indexes[i]];
+            normals.push_back(n);
+        }
+
+        for(int i = 0; i < uv_indexes.size(); i++)
+        {
+            Vertex3D _uv = temp_uv[uv_indexes[i]];
+            uv.push_back(_uv);
+        }
+    }
+    else
+    {
+        cout << "Error: The model cannot be open" << endl;
+    }
+    model_file.close();
 }
