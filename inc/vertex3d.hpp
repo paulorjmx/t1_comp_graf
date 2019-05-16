@@ -7,6 +7,7 @@
 
             public:
                 Vertex3D();
+                Vertex3D(const Vertex3D &vertex);
                 Vertex3D(float x, float y, float z);
                 void set_coordinates(float x, float y, float z);
                 float get_x();
