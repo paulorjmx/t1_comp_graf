@@ -1,4 +1,4 @@
-#include "../inc/vertex.hpp"
+#include "../inc/vertex3d.hpp"
 
 Vertex3D::Vertex3D()
 {
@@ -6,6 +6,14 @@ Vertex3D::Vertex3D()
     this->y = 0.0;
     this->z = 0.0;
     this->w = 1.0;
+}
+
+Vertex3D::Vertex3D(const Vertex3D &vertex)
+{
+    this->x = vertex.x;
+    this->y = vertex.y;
+    this->z = vertex.z;
+    this->w = vertex.w;
 }
 
 Vertex3D::Vertex3D(float x, float y, float z)
