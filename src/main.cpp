@@ -8,6 +8,7 @@
 #include "../inc/vertex3d.hpp"
 #include <vector>
 #include <cmath>
+#include <cstring>
 #include <GLFW/glfw3.h>
 
 void framebuffer_resize_callback(GLFWwindow *window, int width, int height); // Função callback utilizada para atulizar o ViewPort
@@ -182,7 +183,7 @@ void framebuffer_resize_callback(GLFWwindow *window, int width, int height)
 void load_obj(const char *file_name, vector<Vertex3D> &vertexes, vector<Vertex3D> &uv, vector<Vertex3D> &normals)
 {
     float x = 0.0, y = 0.0, z = 0.0;
-    unsigned int vertex_index[3], normal_index[3], uv_index[3];
+    unsigned int vertex_index[4], normal_index[4], uv_index[4];
     vector<unsigned int> vertices_indexes, normals_indexes, uv_indexes;
     vector<Vertex3D> temp_vertices;
     vector<Vertex3D> temp_normals;
@@ -201,60 +202,57 @@ void load_obj(const char *file_name, vector<Vertex3D> &vertexes, vector<Vertex3D
             }
             else
             {
-                if(line_readed[0] == 'v') // If the line begins with v (vertices)
+                if(strncmp(line_readed, "v ", 2) == 0) // If the line begins with v (vertices)
                 {
                     token = &line_readed[2];
                     sscanf(token, "%f %f %f", &x, &y, &z);
                     temp_vertices.push_back(Vertex3D(x, y, z));
                 }
-                else if(line_readed[0] == 'v' && line_readed[1] == 'n') // If the line begins with vn (normals)
+                else if(strncmp(line_readed, "vn", 2) == 0) // If the line begins with vn (normals)
                 {
-                    token = &line_readed[3];
-                    sscanf(token, "%f %f %f", &x, &y, &z);
+                    token = &line_readed[2];
+                    sscanf(token, " %f %f %f", &x, &y, &z);
                     temp_normals.push_back(Vertex3D(x, y, z));
                 }
-                else if(line_readed[0] == 'v' && line_readed[1] == 't') // If the line begins with vt (texture coordinate)
+                else if(strncmp(line_readed, "vt", 2) == 0) // If the line begins with vt (texture coordinate)
                 {
-                    token = &line_readed[3];
-                    sscanf(token, "%f %f", &x, &y);
+                    token = &line_readed[2];
+                    sscanf(token, " %f %f", &x, &y);
                     temp_uv.push_back(Vertex3D(x, y, 1.0));
                 }
                 else if(line_readed[0] == 'f')
                 {
-                    token = &line_readed[2];
-                    sscanf(token, "%ld/%ld/%ld %ld/%ld/%ld %ld/%ld/%ld",
-                                                                &vertex_index[0], &uv_index[0], &normal_index[0],
-                                                                &vertex_index[1], &uv_index[1], &normal_index[1],
-                                                                &vertex_index[2], &uv_index[2], &normal_index[2]);
-                    vertices_indexes.push_back(vertex_index[0]);
-                    vertices_indexes.push_back(vertex_index[1]);
-                    vertices_indexes.push_back(vertex_index[2]);
-                    uv_indexes.push_back(uv_index[0]);
-                    uv_indexes.push_back(uv_index[1]);
-                    uv_indexes.push_back(uv_index[2]);
-                    normals_indexes.push_back(normal_index[0]);
-                    normals_indexes.push_back(normal_index[1]);
-                    normals_indexes.push_back(normal_index[2]);
+                    token = &line_readed[1];
+                    sscanf(token, "%u/%u/%u %u/%u/%u %u/%u/%u", &vertex_index[0], &uv_index[0], &normal_index[0], &vertex_index[1], &uv_index[1], &normal_index[1], &vertex_index[2], &uv_index[2], &normal_index[2]);
+                    vertices_indexes.emplace_back(vertex_index[0]);
+                    vertices_indexes.emplace_back(vertex_index[1]);
+                    vertices_indexes.emplace_back(vertex_index[2]);
+                    uv_indexes.emplace_back(uv_index[0]);
+                    uv_indexes.emplace_back(uv_index[1]);
+                    uv_indexes.emplace_back(uv_index[2]);
+                    normals_indexes.emplace_back(normal_index[0]);
+                    normals_indexes.emplace_back(normal_index[1]);
+                    normals_indexes.emplace_back(normal_index[2]);
                 }
             }
         }
 
         for(int i = 0; i < vertices_indexes.size(); i++)
         {
-            Vertex3D v = temp_vertices[vertices_indexes[i] - 1];
-            vertexes.push_back(v);
+            Vertex3D v = temp_vertices[(vertices_indexes[i] - 1)];
+            vertexes.emplace_back(v);
         }
 
         for(int i = 0; i < normals_indexes.size(); i++)
         {
-            Vertex3D n = temp_normals[normals_indexes[i] - 1];
-            normals.push_back(n);
+            Vertex3D n = temp_normals[(normals_indexes[i] - 1)];
+            normals.emplace_back(n);
         }
 
         for(int i = 0; i < uv_indexes.size(); i++)
         {
             Vertex3D _uv = temp_uv[uv_indexes[i] - 1];
-            uv.push_back(_uv);
+            uv.emplace_back(_uv);
         }
     }
     else
