@@ -9,6 +9,7 @@
                 GraphicMath();
                 void translate_matrix(float x, float y, float z);
                 void rotate_matrix(float x, float y, float z, float velocity);
+                void perspective_matrix(float fov, float aspect, float znear, float zfar);
                 void stop_rotate();
                 float *get_transf_matrix();
                 ~GraphicMath();
