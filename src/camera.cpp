@@ -38,8 +38,6 @@ Camera::Camera(Point ref_point, Point look_at)
     this->view_mat[14] = ((-1.0f * ref_point_coordinates[0]) * zview_coordinates[0]) + ((-1.0f * ref_point_coordinates[1]) * zview_coordinates[1]) + ((-1.0f * ref_point_coordinates[2]) * zview_coordinates[2]);
     this->view_mat[15] = 1.0f;
 
-    std::cout << this->view_mat[12] << " " << this->view_mat[13] << " " << this->view_mat[14] << std::endl;
-
 }
 
 float *Camera::get_view_matrix()
