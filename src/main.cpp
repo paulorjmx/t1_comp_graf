@@ -6,7 +6,6 @@
 #include "../inc/opengl_exception.hpp"
 #include "../inc/graphic_math.hpp"
 #include "../inc/vertex3d.hpp"
-// #include "../inc/vec3d.hpp"
 #include "../inc/camera.hpp"
 #include <vector>
 #include <cmath>
@@ -16,7 +15,7 @@
 void framebuffer_resize_callback(GLFWwindow *window, int width, int height); // Função callback utilizada para atulizar o ViewPort
 void key_pressed_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 void process_input(GLFWwindow *window); // Função utilizada para processar as entradas do teclado
-void load_obj(const char *file_name, vector<Vertex3D> &vertexes, vector<Vertex3D> &uv, vector<Vertex3D> &normals);
+void load_obj(const char *file_name, vector<Vertex3D> &vertexes, vector<Vertex3D> &uv, vector<Vertex3D> &normals); // Funcao utilizada para ler o arquivo que contem um model 3d de um .obj
 
 GraphicMath matrix; // Matriz utilizada para as transformações
 
@@ -26,7 +25,7 @@ int main(int argc, char const *argv[])
     ShaderSource vertex_source; // ShaderSource é a classe criada com o intuito de conter código de shaders.
     ShaderSource fragment_source;
 
-    Camera c(Point(4.0f, 3.0f, 3.0f), Point(0.0f, 0.0f, 0.0f)); // Cria um objeto do tipo camera, especificando o ponto de referencia e o lookat
+    Camera c(Point(0.0f, 0.0f, -3.0f), Point(0.0f, 0.0f, 0.0f)); // Cria um objeto do tipo camera, especificando o ponto de referencia e o lookat
 
     float *view = c.get_view_matrix(); // Retorna a transformacao da camera em um vetor de floats
 
