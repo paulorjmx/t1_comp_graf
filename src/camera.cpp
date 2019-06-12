@@ -2,12 +2,12 @@
 #include "../inc/vec3d.hpp"
 #include <iostream>
 
-Camera::Camera(Point ref_point, Point look_at, Vec3D up)
+Camera::Camera(Point ref_point, Point look_at, Vec3D view_up)
 {
     float *forward, *up, *right, *ref_point_coordinates;
     Vec3D zaxis(ref_point, look_at); // Forward vector
     zaxis.normalize();
-    Vec3D xaxis = up.cross_product(zaxis); // Right vector
+    Vec3D xaxis = view_up.cross_product(zaxis); // Right vector
     xaxis.normalize();
     Vec3D yaxis = zaxis.cross_product(xaxis); // Up vector
 
