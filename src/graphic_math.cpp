@@ -101,32 +101,59 @@ void GraphicMath::stop_rotate()
     this->transf_matrix[15] = this->transf_matrix[15];
 }
 
-void GraphicMath::perspective_matrix(float fov, float aspect, float znear, float zfar)
+void GraphicMath::perspective_matrix(float fov, float znear, float zfar)
 {
-    this->transf_matrix[0] = (1.0f / (float) tan(fov / 2.0f)) / aspect;
+    float half_angle = (fov * 0.5f * M_PI) / 180.0f; // Tranform angle in radians
+    float aspect = 4.0f / 3.0f; // Fixed aspect
+    float scale = 1.0f / tan(half_angle);
+    float z_range = (znear - zfar);
+    this->transf_matrix[0] = 1.0f / (aspect * scale);
     this->transf_matrix[1] = 0.0f;
     this->transf_matrix[2] = 0.0f;
     this->transf_matrix[3] = 0.0f;
 
     this->transf_matrix[4] = 0.0f;
-    this->transf_matrix[5] = (1.0f / (float) tan(fov / 2.0f));
+    this->transf_matrix[5] = scale;
     this->transf_matrix[6] = 0.0f;
     this->transf_matrix[7] = 0.0f;
 
     this->transf_matrix[8] = 0.0f;
     this->transf_matrix[9] = 0.0f;
-    this->transf_matrix[10] = (znear + zfar) / (znear - zfar);
-    this->transf_matrix[11] = -1.0f;
+    this->transf_matrix[10] = (-znear - zfar) / z_range;
+    this->transf_matrix[11] = (2.0f * znear * zfar) / z_range;
 
     this->transf_matrix[12] = 0.0f;
     this->transf_matrix[13] = 0.0f;
-    this->transf_matrix[14] = (-2.0f * (znear + zfar)) / (znear - zfar);
+    this->transf_matrix[14] = -1.0f;
     this->transf_matrix[15] = 0.0f;
 }
 
 float *GraphicMath::get_transf_matrix()
 {
     return this->transf_matrix;
+}
+
+void GraphicMath::scale_matrix(float x, float y, float z)
+{
+    this->transf_matrix[0] = x;
+    this->transf_matrix[1] = 0.0f;
+    this->transf_matrix[2] = 0.0f;
+    this->transf_matrix[3] = 0.0f;
+
+    this->transf_matrix[4] = 0.0f;
+    this->transf_matrix[5] = y;
+    this->transf_matrix[6] = 0.0f;
+    this->transf_matrix[7] = 0.0f;
+
+    this->transf_matrix[8] = 0.0f;
+    this->transf_matrix[9] = 0.0f;
+    this->transf_matrix[10] = z;
+    this->transf_matrix[11] = 0.0f;
+
+    this->transf_matrix[12] = 0.0f;
+    this->transf_matrix[13] = 0.0f;
+    this->transf_matrix[14] = 0.0f;
+    this->transf_matrix[15] = 1.0f;
 }
 
 GraphicMath::~GraphicMath()
