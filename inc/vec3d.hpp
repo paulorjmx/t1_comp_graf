@@ -16,6 +16,7 @@
                 Vec3D cross_product(Vec3D u);
                 void scalar_product(float scalar);
                 float dot_product(Vec3D u);
+                float point_product(Point p);
                 void normalize();
                 ~Vec3D();
         };
