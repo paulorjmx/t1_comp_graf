@@ -24,6 +24,15 @@ Vec3D::Vec3D(Point a, Point b)
     this->coordinates[2] = temp[2];
 }
 
+float Vec3D::point_product(Point p)
+{
+    float *p_coordinates = p.get_point();
+    float result = this->coordinates[0] * p_coordinates[0];
+    result += this->coordinates[1] * p_coordinates[1];
+    result += this->coordinates[2] * p_coordinates[2];
+    return result;
+}
+
 float *Vec3D::get_coodinates()
 {
     return this->coordinates;
