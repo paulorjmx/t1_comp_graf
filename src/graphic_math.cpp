@@ -106,8 +106,8 @@ void GraphicMath::perspective_matrix(float fov, float znear, float zfar)
     float half_angle = (fov * 0.5f * M_PI) / 180.0f; // Tranform angle in radians
     float aspect = 4.0f / 3.0f; // Fixed aspect
     float scale = 1.0f / tan(half_angle);
-    float z_range = (znear - zfar);
-    this->transf_matrix[0] = 1.0f / (aspect * scale);
+
+    this->transf_matrix[0] = (aspect * scale);
     this->transf_matrix[1] = 0.0f;
     this->transf_matrix[2] = 0.0f;
     this->transf_matrix[3] = 0.0f;
@@ -119,12 +119,12 @@ void GraphicMath::perspective_matrix(float fov, float znear, float zfar)
 
     this->transf_matrix[8] = 0.0f;
     this->transf_matrix[9] = 0.0f;
-    this->transf_matrix[10] = (-znear - zfar) / z_range;
-    this->transf_matrix[11] = (2.0f * znear * zfar) / z_range;
+    this->transf_matrix[10] = (zfar + znear) / (zfar - znear);
+    this->transf_matrix[11] = 1.0f;
 
     this->transf_matrix[12] = 0.0f;
     this->transf_matrix[13] = 0.0f;
-    this->transf_matrix[14] = -1.0f;
+    this->transf_matrix[14] = (2.0f * znear * zfar) / (znear - zfar);
     this->transf_matrix[15] = 0.0f;
 }
 
