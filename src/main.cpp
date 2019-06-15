@@ -31,7 +31,7 @@ int main(int argc, char const *argv[])
 
     float *view = c.get_view_matrix(); // Retorna a transformacao da camera em um vetor de floats
 
-    projection.perspective_matrix(45.0f, 0.1f, 100.0f); // Cria uma matriz de projecao perspectiva
+    projection.perspective_matrix(45.0f, 800.0f, 600.0f, 0.1f, 100.0f); // Cria uma matriz de projecao perspectiva
 
     float vertices[] = { -1.0f,-1.0f,-1.0f, // triangle 1 : begin
                             -1.0f,-1.0f, 1.0f,
