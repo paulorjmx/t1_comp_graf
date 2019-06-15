@@ -101,11 +101,11 @@ void GraphicMath::stop_rotate()
     this->transf_matrix[15] = this->transf_matrix[15];
 }
 
-void GraphicMath::perspective_matrix(float fov, float znear, float zfar)
+void GraphicMath::perspective_matrix(float fov, float width, float height, float znear, float zfar)
 {
     float half_angle = (fov * 0.5f * M_PI) / 180.0f; // Tranform angle in radians
-    float aspect = 4.0f / 3.0f; // Fixed aspect
-    float scale = 1.0f / tan(half_angle);
+    float aspect = (float) (width / height); // Aspect ratio
+    float scale = 1.0f / tan(half_angle); // Cot(theta/2)
 
     this->transf_matrix[0] = (aspect * scale);
     this->transf_matrix[1] = 0.0f;
