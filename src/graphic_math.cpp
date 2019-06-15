@@ -107,7 +107,7 @@ void GraphicMath::perspective_matrix(float fov, float width, float height, float
     float aspect = (float) (width / height); // Aspect ratio
     float scale = 1.0f / tan(half_angle); // Cot(theta/2)
 
-    this->transf_matrix[0] = scale/aspect;
+    this->transf_matrix[0] = (float) (scale / aspect);
     this->transf_matrix[1] = 0.0f;
     this->transf_matrix[2] = 0.0f;
     this->transf_matrix[3] = 0.0f;
