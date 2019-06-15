@@ -6,6 +6,7 @@
 #include "../inc/opengl_exception.hpp"
 #include "../inc/graphic_math.hpp"
 #include "../inc/vertex3d.hpp"
+#include "../inc/vec3d.hpp"
 #include "../inc/camera.hpp"
 #include <vector>
 #include <cmath>
@@ -21,19 +22,53 @@ GraphicMath matrix; // Matriz utilizada para as transformações
 
 int main(int argc, char const *argv[])
 {
-    GraphicMath projection;
+    Vec3D viewUp(Point(0.0f, 0.0f, 0.0f), Point(0.0f, 1.0f, 0.0f)); // Cria um vetor para armazenar o vetor "view up"
+    GraphicMath projection; // Variavel utilizada para guardar a transformacao de projecao perspectiva
     ShaderSource vertex_source; // ShaderSource é a classe criada com o intuito de conter código de shaders.
     ShaderSource fragment_source;
 
-    Camera c(Point(0.0f, 0.0f, -3.0f), Point(0.0f, 0.0f, 0.0f)); // Cria um objeto do tipo camera, especificando o ponto de referencia e o lookat
+    Camera c(Point(5.0f, 5.0f, 5.0f), Point(0.0f, 0.0f, 0.0f), viewUp); // Cria um objeto do tipo camera, especificando o ponto de referencia e o lookat
 
     float *view = c.get_view_matrix(); // Retorna a transformacao da camera em um vetor de floats
 
-    projection.perspective_matrix(45.0f, (4.0f / 3.0f), 0.1f, 100.0f); // Cria uma matriz de projecao perspectiva
+    projection.perspective_matrix(45.0f, 0.1f, 100.0f); // Cria uma matriz de projecao perspectiva
 
-    float vertices[] = { -0.25f, -0.25f, 0.0f,
-                           0.25f, -0.25f, 0.0f,
-                           0.0f,  0.25f, 0.0f };
+    float vertices[] = { -1.0f,-1.0f,-1.0f, // triangle 1 : begin
+                            -1.0f,-1.0f, 1.0f,
+                            -1.0f, 1.0f, 1.0f, // triangle 1 : end
+                            1.0f, 1.0f,-1.0f, // triangle 2 : begin
+                            -1.0f,-1.0f,-1.0f,
+                            -1.0f, 1.0f,-1.0f, // triangle 2 : end
+                            1.0f,-1.0f, 1.0f,
+                            -1.0f,-1.0f,-1.0f,
+                            1.0f,-1.0f,-1.0f,
+                            1.0f, 1.0f,-1.0f,
+                            1.0f,-1.0f,-1.0f,
+                            -1.0f,-1.0f,-1.0f,
+                            -1.0f,-1.0f,-1.0f,
+                            -1.0f, 1.0f, 1.0f,
+                            -1.0f, 1.0f,-1.0f,
+                            1.0f,-1.0f, 1.0f,
+                            -1.0f,-1.0f, 1.0f,
+                            -1.0f,-1.0f,-1.0f,
+                            -1.0f, 1.0f, 1.0f,
+                            -1.0f,-1.0f, 1.0f,
+                            1.0f,-1.0f, 1.0f,
+                            1.0f, 1.0f, 1.0f,
+                            1.0f,-1.0f,-1.0f,
+                            1.0f, 1.0f,-1.0f,
+                            1.0f,-1.0f,-1.0f,
+                            1.0f, 1.0f, 1.0f,
+                            1.0f,-1.0f, 1.0f,
+                            1.0f, 1.0f, 1.0f,
+                            1.0f, 1.0f,-1.0f,
+                            -1.0f, 1.0f,-1.0f,
+                            1.0f, 1.0f, 1.0f,
+                            -1.0f, 1.0f,-1.0f,
+                            -1.0f, 1.0f, 1.0f,
+                            1.0f, 1.0f, 1.0f,
+                            -1.0f, 1.0f, 1.0f,
+                            1.0f,-1.0f, 1.0f };
 
     try
     {
@@ -107,7 +142,7 @@ int main(int argc, char const *argv[])
             glUniformMatrix4fv(view_location, 1, GL_FALSE, view);
             glUniformMatrix4fv(projection_location, 1, GL_FALSE, projection.get_transf_matrix());
             va.bind_vertex_array(0);
-            glDrawArrays(GL_TRIANGLES, 0, 3);
+            glDrawArrays(GL_TRIANGLES, 0, 12*3);
 
             glfwSwapBuffers(window);
             glfwPollEvents();
