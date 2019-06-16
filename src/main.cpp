@@ -13,6 +13,7 @@
 #include <cstring>
 #include <GLFW/glfw3.h>
 
+float x_cam = 3.0f;
 void framebuffer_resize_callback(GLFWwindow *window, int width, int height); // Função callback utilizada para atulizar o ViewPort
 void key_pressed_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 void process_input(GLFWwindow *window); // Função utilizada para processar as entradas do teclado
@@ -27,7 +28,7 @@ int main(int argc, char const *argv[])
     ShaderSource vertex_source; // ShaderSource é a classe criada com o intuito de conter código de shaders.
     ShaderSource fragment_source;
 
-    Camera c(Point(5.0f, 5.0f, 5.0f), Point(0.0f, 0.0f, 0.0f), viewUp); // Cria um objeto do tipo camera, especificando o ponto de referencia e o lookat
+    Camera c(Point(4.0f, 3.0f, 3.0f), Point(0.0f, 0.0f, 0.0f), viewUp); // Cria um objeto do tipo camera, especificando o ponto de referencia e o lookat
 
     float *view = c.get_view_matrix(); // Retorna a transformacao da camera em um vetor de floats
 
@@ -79,7 +80,7 @@ int main(int argc, char const *argv[])
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        GLFWwindow *window = glfwCreateWindow(800, 600, "Trabalho 1 - Computação Gráfica", NULL, NULL);
+        GLFWwindow *window = glfwCreateWindow(800, 600, "Trabalho 3 - Computação Gráfica", NULL, NULL);
         if(window == NULL)
         {
             cout << "Failed to create window!" << endl;
@@ -165,7 +166,14 @@ void process_input(GLFWwindow *window)
 
 void key_pressed_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
-
+    if(key == GLFW_KEY_D && action == GLFW_PRESS)
+    {
+        x_cam += 0.25f;
+    }
+    else if(key == GLFW_KEY_A && action == GLFW_PRESS)
+    {
+        x_cam -= 0.25f;
+    }
 }
 
 void framebuffer_resize_callback(GLFWwindow *window, int width, int height)
